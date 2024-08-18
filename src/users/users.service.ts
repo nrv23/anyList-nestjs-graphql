@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -39,8 +39,23 @@ export class UsersService {
     return [];
   }
 
-  async findOne(id: string): Promise<User> {
-    return;
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.userRepo.findOneBy({
+      email
+    });
+
+    if(!user) throw new NotFoundException("No se encontró un usuario");
+    return user;
+  }
+
+  async findOneById(id: string): Promise<User> {
+    console.log({id})
+    const user = await this.userRepo.findOneBy({
+      id
+    });
+
+    if(!user) throw new NotFoundException("No se encontró un usuario");
+    return user;
   }
 
   update(id: string, updateUserInput: UpdateUserInput) {

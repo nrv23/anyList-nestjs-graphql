@@ -27,7 +27,7 @@ type Query {
   items: [Item!]!
   item(id: ID!): Item!
   users: [User!]!
-  user(id: ID!): User!
+  revalidateToken: AuthResponseType!
 }
 
 type Mutation {
@@ -36,6 +36,7 @@ type Mutation {
   removeItem(id: ID!): String!
   blockUser(id: ID!): User!
   signup(signupInput: SignupInput!): AuthResponseType!
+  login(loginInput: LoginInput!): AuthResponseType!
 }
 
 input CreateItemInput {
@@ -55,4 +56,9 @@ input SignupInput {
   email: String!
   password: String!
   fullName: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }

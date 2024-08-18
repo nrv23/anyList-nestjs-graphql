@@ -10,8 +10,6 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 
-
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -20,14 +18,12 @@ import { CommonModule } from './common/common.module';
       // debug: false,
       playground: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      plugins: [
-        ApolloServerPluginLandingPageLocalDefault()
-      ]
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     // configuracion de typeorm
 
     TypeOrmModule.forRoot({
-      type: "postgres",
+      type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT!,
       username: process.env.DB_USERNAME,
@@ -35,18 +31,14 @@ import { CommonModule } from './common/common.module';
       database: process.env.DB_NAME,
       //entites: [""],
       synchronize: true,
-      autoLoadEntities: true
+      autoLoadEntities: true,
     }),
-
     ItemsModule,
-
     UsersModule,
-
     AuthModule,
-
     CommonModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
