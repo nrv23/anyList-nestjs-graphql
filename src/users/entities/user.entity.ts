@@ -34,7 +34,7 @@ export class User {
 
   @Field(() => [String])
   @Column({
-    type: "varchar",
+    type: "text",
     array: true,
     default: ["user"]
   })
