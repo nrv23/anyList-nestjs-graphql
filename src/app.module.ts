@@ -9,17 +9,42 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    /* GraphQLModule.forRoot<ApolloDriverConfig>({
+       driver: ApolloDriver,
+       // debug: false,
+       playground: false,
+       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+     }),*/
+
+    //
+    // modulos asincronos
+    GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      // debug: false,
-      playground: false,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      imports: [AuthModule], // importar modulos
+      inject: [JwtService], // inyectar servicios de ese modulo
+      useFactory: async (jwtService: JwtService) => ({
+        driver: ApolloDriver,
+        // debug: false,
+        playground: false,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        context({ req }) {
+          /*
+          const token = req.headers.authorization?.replace("Bearer ","");
+          if(!token) throw new Error("token needed")
+          const payload = jwtService.decode(token);
+          if(!payload) throw new Error("Invalid token");
+          */
+        }
+      })
     }),
+
     // configuracion de typeorm
 
     TypeOrmModule.forRoot({
@@ -41,4 +66,4 @@ import { CommonModule } from './common/common.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
