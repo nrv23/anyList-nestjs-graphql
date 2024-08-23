@@ -40,6 +40,7 @@ export class AuthService {
             const user = await this.userService.findOneByEmail(email);
             const matched = await this.passwordService.compareHash(password, user.password)
             const response = new AuthResponseType();
+            // agregar validacion para usuario inactivo
             if (!matched) this.handleError({ code: '23456', details: 'Datos de autenticación incorrectos' });
 
             response.token = this.getJwtToken(user.id);

@@ -16,7 +16,7 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User> ,
+    private readonly userRepo: Repository<User>,
     private readonly password: PasswordService
   ) {
 
@@ -38,7 +38,13 @@ export class UsersService {
 
   async findAll(validRoles: ValidRoles[]): Promise<User[]> {
 
-    if(validRoles.length === 0)  return this.userRepo.find();
+    if (validRoles.length === 0) return this.userRepo.find(
+      /*{
+      relations: {
+        lastUpdatedBy: true
+      }
+    }*/
+    );
 
     return this.userRepo.createQueryBuilder()
       .andWhere('ARRAY[roles] && ARRAY[:...roles]')
@@ -51,30 +57,49 @@ export class UsersService {
       email
     });
 
-    if(!user) throw new NotFoundException("No se encontró un usuario");
+    if (!user) throw new NotFoundException("No se encontró un usuario");
     return user;
   }
 
   async findOneById(id: string): Promise<User> {
-    console.log({id})
+    console.log({ id })
     const user = await this.userRepo.findOneBy({
       id
     });
 
-    if(!user) throw new NotFoundException("No se encontró un usuario");
+    if (!user) throw new NotFoundException("No se encontró un usuario");
     return user;
   }
 
-  update(id: string, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserInput: UpdateUserInput, updateBy: User): Promise<User> {
+    try {
+      const user = await this.findOneById(id);
+      const updateUser: User = {
+        ...user,
+        ...updateUserInput,
+        lastUpdatedBy: updateBy,
+        password: await this.password.hash(updateUserInput.password),
+        id
+      };
+      await this.userRepo.save(updateUser);
+      return updateUser;
+
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
-  async blockUser(id: string): Promise<User> {
-    return;
+  async blockUser(id: string, user: User): Promise<User> {
+
+    const userToBlock = await this.findOneById(id);
+    userToBlock.isActive = false;
+    userToBlock.lastUpdatedBy = user;
+    this.userRepo.save(userToBlock);
+    return userToBlock;
   }
 
   private handleError(error: any) {
-    
+
     this.logger.debug(error);
 
     if (error.code === "23505") {
