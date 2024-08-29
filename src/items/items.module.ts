@@ -10,7 +10,8 @@ import { Item } from './entities/item.entity';
     TypeOrmModule.forFeature([Item]) // aqui le seteo la entidad
   ],
   exports: [
-    ItemsService
+    ItemsService,
+    TypeOrmModule
   ]
 })
 export class ItemsModule {}

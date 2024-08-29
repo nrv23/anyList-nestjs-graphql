@@ -52,6 +52,9 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): String!
+
+  """cargar datos en la bd"""
+  executeSeed: Boolean!
 }
 
 input SignupInput {
