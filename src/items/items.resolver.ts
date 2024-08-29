@@ -3,34 +3,52 @@ import { ItemsService } from './items.service';
 import { Item } from './entities/item.entity';
 import { CreateItemInput } from './dto/inputs/create-item.input';
 import { UpdateItemInput } from './dto/inputs/update-item.input';
-import { ParseUUIDPipe } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { CurrentUserDecorator } from '../auth/decorators/current-user.decorator';
+import { ValidRoles } from '../auth/enums/valid-roles.enum';
+import { User } from '../users/entities/user.entity';
 
 @Resolver(() => Item)
+@UseGuards(JwtAuthGuard) // esto protege las rutas
 export class ItemsResolver {
-  constructor(private readonly itemsService: ItemsService) {}
+  constructor(private readonly itemsService: ItemsService) { }
 
   @Mutation(() => Item)
-  async createItem(@Args('createItemInput') createItemInput: CreateItemInput) : Promise<Item> {
-    return this.itemsService.create(createItemInput);
+  async createItem(
+    @CurrentUserDecorator([ValidRoles.admin]) user: User,
+    @Args('createItemInput') createItemInput: CreateItemInput
+  ): Promise<Item> {
+    return this.itemsService.create(createItemInput, user);
   }
 
   @Query(() => [Item], { name: 'items' })
-  async findAll() : Promise<Item[]>  {
-    return this.itemsService.findAll();
+  async findAll(
+    @CurrentUserDecorator([ValidRoles.admin]) user: User
+  ): Promise<Item[]> {
+    return this.itemsService.findAll(user);
   }
 
   @Query(() => Item, { name: 'item' })
-  async findOne(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
-    return this.itemsService.findOne(id);
+  async findOne(
+    @CurrentUserDecorator([ValidRoles.admin]) user: User,
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
+    return this.itemsService.findOne(id, user);
   }
 
   @Mutation(() => Item)
-  async updateItem(@Args('updateItemInput') updateItemInput: UpdateItemInput): Promise<Item> {
-    return this.itemsService.update(updateItemInput.id, updateItemInput);
+  async updateItem(
+    @CurrentUserDecorator([ValidRoles.admin]) user: User,
+    @Args('updateItemInput') updateItemInput: UpdateItemInput
+  ): Promise<Item> {
+    return this.itemsService.update(updateItemInput.id, updateItemInput, user);
   }
 
   @Mutation(() => String)
-  async removeItem(@Args('id', { type: () => ID }) id: string) {
-    return await this.itemsService.remove(id);
+  async removeItem(
+    @CurrentUserDecorator([ValidRoles.admin]) user: User,
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string
+  ) {
+    return await this.itemsService.remove(id, user);
   }
 }

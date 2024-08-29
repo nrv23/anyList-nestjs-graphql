@@ -10,11 +10,6 @@ export class CreateItemInput {
   @IsNotEmpty()
   name: string;
 
-  @IsNumber()
-  @Min(1)
-  @Field(() => Float)
-  quantity: number;
-
   @IsString()
   @MinLength(1)
   @IsOptional()

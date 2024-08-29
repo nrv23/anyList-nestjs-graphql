@@ -8,6 +8,9 @@ import { Item } from './entities/item.entity';
   providers: [ItemsResolver, ItemsService],
   imports: [
     TypeOrmModule.forFeature([Item]) // aqui le seteo la entidad
+  ],
+  exports: [
+    ItemsService
   ]
 })
 export class ItemsModule {}
