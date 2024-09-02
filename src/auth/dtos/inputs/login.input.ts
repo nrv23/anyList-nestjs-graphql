@@ -12,7 +12,7 @@ export class LoginInput {
 
     @IsString()
     @MaxLength(15)
-    @MinLength(8)
+    @MinLength(6)
     @Matches(/^[a-zA-Z0-9_]+$/,{
         message: "La contraseña no cumple con el formato"
     })

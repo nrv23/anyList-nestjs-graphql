@@ -8,6 +8,8 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CurrentUserDecorator } from '../auth/decorators/current-user.decorator';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { User } from '../users/entities/user.entity';
+import { PaginationArgs } from '../common/dtos/args/pagination.args';
+import { SearchArgs } from '../common/dtos/args/search.args';
 
 @Resolver(() => Item)
 @UseGuards(JwtAuthGuard) // esto protege las rutas
@@ -24,9 +26,11 @@ export class ItemsResolver {
 
   @Query(() => [Item], { name: 'items' })
   async findAll(
-    @CurrentUserDecorator([ValidRoles.admin]) user: User
+    @CurrentUserDecorator([ValidRoles.admin]) user: User,
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArg: SearchArgs
   ): Promise<Item[]> {
-    return this.itemsService.findAll(user);
+    return this.itemsService.findAll(user, paginationArgs,searchArg);
   }
 
   @Query(() => Item, { name: 'item' })

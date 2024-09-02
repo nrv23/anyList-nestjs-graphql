@@ -2,6 +2,7 @@ import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { ValidRoles } from '../../auth/enums/valid-roles.enum';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Item } from '../../items/entities/item.entity';
+import { List } from '../../list/entities/list.entity';
 
 @Entity({ name: "users" })
 @ObjectType()
@@ -52,6 +53,10 @@ export class User {
   lastUpdatedBy?: User
 
   @OneToMany(() => Item, items => items.user,{ lazy: true})
-  @Field(() => [Item])
+  //@Field(() => [Item]) si este decorador se quita, graphql no puede interpretar que esta propiedad 
+  // existe en la entidad
   items: Item[];
+
+  @OneToMany(() => List, list => list.user)
+  lists: List[];
 }
