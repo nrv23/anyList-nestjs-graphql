@@ -2,10 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ListItem {
+  id: ID!
+  quantity: Float!
+  completed: Boolean!
+  list: List!
+  item: Item!
+}
+
 type List {
   id: ID!
   name: String!
   user: User!
+  items(
+    """De cual numero de registro empieza a obtener"""
+    offset: Int = 0
+
+    """número de registros que va obtener """
+    limit: Int = 10
+
+    """término de busqueda"""
+    search: String
+  ): [ListItem!]!
+  totalItems: Int!
 }
 
 type User {
@@ -72,6 +91,7 @@ type Query {
     search: String
   ): [List!]!
   list(id: ID!): List!
+  listItem: [ListItem!]!
 }
 
 enum ValidRoles {
@@ -91,6 +111,7 @@ type Mutation {
   createList(createListInput: CreateListInput!): List!
   updateList(updateListInput: UpdateListInput!): List!
   removeList(id: ID!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
 
   """cargar datos en la bd"""
   executeSeed: Boolean!
@@ -134,4 +155,11 @@ input CreateListInput {
 input UpdateListInput {
   name: String
   id: ID!
+}
+
+input CreateListItemInput {
+  quantity: Float = 0
+  listId: ID!
+  itemId: ID!
+  completed: Boolean = false
 }

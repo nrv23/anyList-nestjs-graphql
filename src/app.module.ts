@@ -12,6 +12,7 @@ import { CommonModule } from './common/common.module';
 import { JwtService } from '@nestjs/jwt';
 import { SeedModule } from './seed/seed.module';
 import { ListModule } from './list/list.module';
+import { ListItemModule } from './list-item/list-item.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { ListModule } from './list/list.module';
     CommonModule,
     SeedModule,
     ListModule,
+    ListItemModule,
   ],
   controllers: [],
   providers: [],

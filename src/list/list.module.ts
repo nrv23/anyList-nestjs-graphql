@@ -4,12 +4,14 @@ import { ListResolver } from './list.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { List } from './entities/list.entity';
 import { CommonModule } from '../common/common.module';
+import { ListItemModule } from '../list-item/list-item.module';
 
 @Module({
   providers: [ListResolver, ListService],
   imports: [
     TypeOrmModule.forFeature([List]),
-    CommonModule
+    CommonModule,
+    ListItemModule
   ],
   exports: [TypeOrmModule, ListService]
 })
