@@ -92,6 +92,7 @@ type Query {
   ): [List!]!
   list(id: ID!): List!
   listItem: [ListItem!]!
+  getListItemById(id: String!): ListItem!
 }
 
 enum ValidRoles {
@@ -112,6 +113,7 @@ type Mutation {
   updateList(updateListInput: UpdateListInput!): List!
   removeList(id: ID!): List!
   createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(udpateListItemInput: UpdateListItemInput!): ListItem!
 
   """cargar datos en la bd"""
   executeSeed: Boolean!
@@ -162,4 +164,12 @@ input CreateListItemInput {
   listId: ID!
   itemId: ID!
   completed: Boolean = false
+}
+
+input UpdateListItemInput {
+  quantity: Float = 0
+  listId: ID
+  itemId: ID
+  completed: Boolean = false
+  id: ID!
 }
