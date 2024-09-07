@@ -28,7 +28,9 @@ export class ListItemService {
       list: { id: createListItemInput.listId },
     });
     // validar si la lista pertenece al usuario actual
-    return await this.listItemRepo.save(newListItem);
+    await this.listItemRepo.save(newListItem);
+
+    return this.findOne(newListItem.id);
   }
 
   findAll(
